@@ -1,12 +1,15 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Task } from "../types";
 
 export const useTasks = () => {
-    const [tasks, setTasks] = useState<Task[]>([
-        { id: "1", title: "Configurar proyecto", status: "todo" },
-        { id: "2", title: "Diseñar UI", status: "in-progress" },
-        { id: "3", title: "Implementar Drag & Drop", status: "done" },
-    ]);
+    const [tasks, setTasks] = useState<Task[]>(() => {
+        const savedTasks = localStorage.getItem("tasks");
+        return savedTasks ? JSON.parse(savedTasks):[];
+    });
+
+    useEffect(()=>{
+        localStorage.setItem("tasks",JSON.stringify(tasks));
+    },[tasks])
 
     const addTask = (title:string) => {
         const newTask: Task = {
